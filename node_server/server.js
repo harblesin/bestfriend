@@ -96,15 +96,6 @@ client.on('message', async msg => {
 
         ctx.putImageData(imgData, 0, 0);
         ctx.drawImage(avatar, 25, 25, 200, 200);
-        // const background = await Canvas.loadImage(path.join(__dirname + `../../../../../Pictures/${files[random]}`));
-        // ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-
-        // ctx.strokeStyle = '#74037b';
-        // ctx.strokeRect(0, 0, canvas.width, canvas.height);
-
-        // 
-        // // Move the image downwards vertically and constrain its height to 200, so it's a square
-        // 
 
         const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-image.png');
 
