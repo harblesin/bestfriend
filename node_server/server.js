@@ -10,7 +10,13 @@ const say = new Say('win32');
 const axios = require("axios");
 const googleTTS = require("google-tts-api");
 const Canvas = require('canvas')
+const textToSpeech = require('@google-cloud/text-to-speech');
 
+// Import other required libraries
+const fs = require('fs');
+const util = require('util');
+// Creates a client
+const speechClient = new textToSpeech.TextToSpeechClient();
 
 let connectedChannel;
 let dispatcher;
@@ -51,7 +57,7 @@ client.on("voiceStateUpdate", async (oldMember, newMember) => {
         console.log("whats up you musty bitch");
         setTimeout(async () => {
             await quickStart("We'll talk about it later");
-            dispatcher = connectedChannel.play('http://localhost:8080/voice/googlevoice.mp3', { volume: 1 });
+            dispatcher = connectedChannel.play('http://localhost:9000/voice/googlevoice.mp3', { volume: 1 });
         }, 2000)
 
     }
@@ -64,7 +70,7 @@ client.on("voiceStateUpdate", async (oldMember, newMember) => {
 client.on('message', async msg => {
 
 
-    if (msg.content === 'smile random') {
+    if (msg.content === 'draw') {
         // let { body } = await superagent.get(msg.attachments.first().url);
 
         let files = fs.readdirSync(path.join(__dirname + `../../../../../Pictures`));
@@ -72,34 +78,118 @@ client.on('message', async msg => {
         let random = Math.floor(Math.random() * files.length) + 1;
 
         // client.on('guildMemberAdd', async member => {
+        // // const channel = member.guild.channels.cache.find(ch => ch.name === 'member-log');
+        // // if (!channel) return;
+
+        // const canvas = Canvas.createCanvas(700, 250);
+        // const ctx = canvas.getContext('2d');
+
+        // const background = await Canvas.loadImage(`http://localhost:9000/` + files[random]);
+
+        // console.log(background)
+
+        // const imgData = ctx.getImageData(background, canvas.width, canvas.height);
+
+        // // function randomInt(min, max) {
+        // //     return Math.floor(Math.random() * (max - min + 1)) + min;
+        // // }
+
+        // // for (var i = 0; i < imgData.data.length; i += 4) {
+        // //     imgData.data[i] = randomInt(0, 2); // red
+        // //     imgData.data[i + 1] = randomInt(0, 10); // green
+        // //     imgData.data[i + 2] = randomInt(10, 100); // blue
+        // //     imgData.data[i + 3] = 200; // alpha
+        // // }
+        // const avatar = await Canvas.loadImage(msg.author.displayAvatarURL({ format: 'jpg' }));
+
+
+        // ctx.putImageData(imgData, 0, 0);
+        // ctx.drawImage(avatar, 25, 25, 200, 200);
+
+
+        // ctx.font = 'italic 18px Arial';
+        // ctx.textAlign = 'center';
+        // ctx.textBaseline = 'middle';
+        // ctx.fillStyle = 'red';  // a color name or by using rgb/rgba/hex values
+        // ctx.fillText('Hello World!', 150, 50);
+
+
+        // const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-image.png');
+
+        // msg.reply(`I'm an artist!`, attachment);
+
+
+        const applyText = (canvas, text) => {
+            const ctx = canvas.getContext('2d');
+
+            // Declare a base size of the font
+            let fontSize = 70;
+
+            do {
+                // Assign the font to the context and decrement it so it can be measured again
+                ctx.font = `${fontSize -= 10}px sans-serif`;
+                // Compare pixel width of the text to the canvas minus the approximate avatar size
+            } while (ctx.measureText(text).width > canvas.width - 300);
+
+            // Return the result to use in the actual canvas
+            return ctx.font;
+        };
+
+
+
+
+
+
         // const channel = member.guild.channels.cache.find(ch => ch.name === 'member-log');
         // if (!channel) return;
 
         const canvas = Canvas.createCanvas(700, 250);
         const ctx = canvas.getContext('2d');
 
+        const background = await Canvas.loadImage(`http://localhost:9000/${files[random]}`);
+        ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
-        var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = '#74037b';
+        ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
-        function randomInt(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
+        // Slightly smaller text placed above the member's display name
+        ctx.font = '28px sans-serif';
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText('Welcome to the server,', canvas.width / 2.5, canvas.height / 3.5);
 
-        for (var i = 0; i < imgData.data.length; i += 4) {
-            imgData.data[i] = randomInt(0, 2); // red
-            imgData.data[i + 1] = randomInt(0, 10); // green
-            imgData.data[i + 2] = randomInt(10, 100); // blue
-            imgData.data[i + 3] = 200; // alpha
-        }
+        // Add an exclamation point here and below
+        ctx.font = applyText(canvas, `Stupid Cunt!`);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText(`Filthy whore!`, canvas.width / 2.5, canvas.height / 1.8);
+
+        ctx.beginPath();
+        ctx.arc(125, 125, 100, 0, Math.PI * 2, true);
+        ctx.closePath();
+        ctx.clip();
+
         const avatar = await Canvas.loadImage(msg.author.displayAvatarURL({ format: 'jpg' }));
-
-
-        ctx.putImageData(imgData, 0, 0);
         ctx.drawImage(avatar, 25, 25, 200, 200);
 
         const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-image.png');
 
-        msg.reply(`I'm an artist!`, attachment);
+        msg.reply(`Welcome to the server, ${'dumb slut'}!`, attachment);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // });
     }
 
@@ -122,7 +212,7 @@ client.on('message', async msg => {
 
         let files = fs.readdirSync(path.join(__dirname + `../../../../../Music/voice/duke_nukem`))
 
-        dispatcher = connectedChannel.play(`http://localhost:8080/voice/duke_nukem/${files[choice]}`, { volume: 1.5 });
+        dispatcher = connectedChannel.play(`http://localhost:9000/voice/duke_nukem/${files[choice]}`, { volume: 1.5 });
 
         return;
     }
@@ -201,7 +291,7 @@ client.on('message', async msg => {
 
 
 
-        // const url = googleTTS.getAudioUrl(text.join(' '), {
+        // const url = googleTTS.getAudioUrl(text, {
         //     lang: 'en',
         //     slow: false,
         //     host: 'https://translate.google.com',
@@ -216,7 +306,7 @@ client.on('message', async msg => {
         //     return console.log(err)
         // }
 
-        dispatcher = connectedChannel.play('http://localhost:8080/voice/googlevoice.mp3', { volume: 1 });
+        dispatcher = connectedChannel.play('http://localhost:9000/voice/googlevoice.mp3', { volume: 1 });
 
         //     console.log('here we are')
 
@@ -226,13 +316,7 @@ client.on('message', async msg => {
 });
 
 
-const textToSpeech = require('@google-cloud/text-to-speech');
 
-// Import other required libraries
-const fs = require('fs');
-const util = require('util');
-// Creates a client
-const speechClient = new textToSpeech.TextToSpeechClient();
 quickStart = async (text) => {
 
 
@@ -265,7 +349,7 @@ quickStart = async (text) => {
     const request = {
         input: { text: text },
         // Select the language and SSML voice gender (optional)
-        voice: { languageCode: 'en-US', name: 'en-US-Standard-I' },
+        voice: { languageCode: 'en-US', name: 'en-US-Standard-J' },
         // select the type of audio encoding
         audioConfig: { audioEncoding: 'MP3' },
     };
