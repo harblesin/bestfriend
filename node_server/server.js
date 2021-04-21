@@ -33,11 +33,20 @@ app.use(express.static(path.join(__dirname + "../public")));
 app.use(express.static(path.join(__dirname + `../../../../../Music`)));
 app.use(express.static(path.join(__dirname + `../../../../../Pictures`)));
 
-// app.use(router);
-
 
 client.on('ready', async () => {
-    await client.channels.fetch('827815696024993844').then(async channel => {
+
+    // await client.channels.map(c => {
+    //     console.log(c)
+    // })
+
+
+    // console.log(client.channels.cache.map(c => {
+    //     console.log(c.guild.members.cache.map(c => c.user))
+    // }))
+
+
+    await client.channels.fetch('832424837707857970').then(async channel => {
         connectedChannel = await channel.join();
 
     });
@@ -48,26 +57,38 @@ client.on('ready', async () => {
 
 });
 
-client.on("voiceStateUpdate", async (oldMember, newMember) => {
+client.on("voiceStateUpdate", async (oldState, newState) => {
 
-    let newUserChannel = newMember.channelID;
-    let oldUserChannel = oldMember.channelID;
+    let channelId = client.voice.connections.find(c => c.channel.type === 'voice').channel.id;
 
-    if (oldUserChannel !== "827815696024993844" && newUserChannel === "827815696024993844") {
-        console.log("whats up you musty bitch");
-        setTimeout(async () => {
-            await quickStart("We'll talk about it later");
-            dispatcher = connectedChannel.play('http://localhost:9000/voice/googlevoice.mp3', { volume: 1 });
-        }, 2000)
-
+    if (!channelId) {
+        return;
     }
 
+    let newUserChannel = newState.channelID;
+    let oldUserChannel = oldState.channelID;
+
+    if (newUserChannel === channelId) {
+        setTimeout(async () => {
+            let user = await client.users.fetch(newState.id).then(async u => { return u.username });
+            console.log(user)
+            await quickStart(`${user} entered the channel.`);
+            dispatcher = connectedChannel.play('http://localhost:9000/voice/googlevoice.mp3', { volume: 1 });
+        }, 500)
+    } else if (oldUserChannel === channelId) {
+        setTimeout(async () => {
+            let user = await client.users.fetch(newState.id).then(async u => { return u.username });
+            await quickStart(`${user} left the channel`);
+            dispatcher = connectedChannel.play('http://localhost:9000/voice/googlevoice.mp3', { volume: 1 });
+        }, 500)
+    }
 });
 
 
 
 
 client.on('message', async msg => {
+
 
 
     if (msg.content === 'draw') {
