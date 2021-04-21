@@ -71,24 +71,35 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
     if (newUserChannel === channelId) {
         setTimeout(async () => {
             let user = await client.users.fetch(newState.id).then(async u => { return u.username });
-            console.log(user)
-            await quickStart(`${user} entered the channel.`);
-            dispatcher = connectedChannel.play('http://localhost:9000/voice/googlevoice.mp3', { volume: 1 });
+            // await quickStart(`${user} entered the channel.`);
+            const url = googleTTS.getAudioUrl(`${user} entered the channel.`, {
+                lang: 'en',
+                slow: false,
+                host: 'https://translate.google.com',
+            });
+
+            dispatcher = connectedChannel.play(url, { volume: 1 });
+
+            // dispatcher = connectedChannel.play('http://localhost:9000/voice/googlevoice.mp3', { volume: 1 });
         }, 500)
     } else if (oldUserChannel === channelId) {
         setTimeout(async () => {
             let user = await client.users.fetch(newState.id).then(async u => { return u.username });
-            await quickStart(`${user} left the channel`);
-            dispatcher = connectedChannel.play('http://localhost:9000/voice/googlevoice.mp3', { volume: 1 });
+            // await quickStart(`${user} left the channel`);
+            const url = googleTTS.getAudioUrl(`${user} left the channel`, {
+                lang: 'en',
+                slow: false,
+                host: 'https://translate.google.com',
+            });
+
+            dispatcher = connectedChannel.play(url, { volume: 1 });
+            // dispatcher = connectedChannel.play('http://localhost:9000/voice/googlevoice.mp3', { volume: 1 });
         }, 500)
     }
 });
 
 
-
-
 client.on('message', async msg => {
-
 
 
     if (msg.content === 'draw') {
@@ -308,17 +319,17 @@ client.on('message', async msg => {
         //     await writeFile(path.join(__dirname + `../../../../../Music/voice/googlevoice.mp3`), response.audioContent, 'binary');
         //     console.log('Audio content written to file: output.mp3');
         // }
-        await quickStart(text);
+        // await quickStart(text);
 
 
 
-        // const url = googleTTS.getAudioUrl(text, {
-        //     lang: 'en',
-        //     slow: false,
-        //     host: 'https://translate.google.com',
-        // });
+        const url = googleTTS.getAudioUrl(text, {
+            lang: 'en',
+            slow: false,
+            host: 'https://translate.google.com',
+        });
 
-        // dispatcher = connectedChannel.play(url, { volume: 1 });
+        dispatcher = connectedChannel.play(url, { volume: 1 });
 
 
         // say.export(text, null, 1, path.join(__dirname + `../../../../../Music/voice/voice.wav`), (err) => {
@@ -327,7 +338,7 @@ client.on('message', async msg => {
         //     return console.log(err)
         // }
 
-        dispatcher = connectedChannel.play('http://localhost:9000/voice/googlevoice.mp3', { volume: 1 });
+        // dispatcher = connectedChannel.play('http://localhost:9000/voice/googlevoice.mp3', { volume: 1 });
 
         //     console.log('here we are')
 
