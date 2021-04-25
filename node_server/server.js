@@ -46,7 +46,7 @@ client.on('ready', async () => {
     // }))
 
 
-    await client.channels.fetch('832424837707857970').then(async channel => {
+    await client.channels.fetch('827348440782340117').then(async channel => {
         connectedChannel = await channel.join();
 
     });
@@ -63,7 +63,16 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 
     if (!channelId) {
         return;
+    } else if (oldState.serverDeaf !== newState.serverDeaf ||
+        oldState.serverMute !== newState.serverMute ||
+        oldState.selfDeaf !== newState.selfDeaf ||
+        oldState.selfMute !== newState.selfMute ||
+        oldState.selfVideo !== newState.selfVideo ||
+        oldState.streaming !== newState.streaming) {
+        return;
     }
+
+    console.log(newState)
 
     let newUserChannel = newState.channelID;
     let oldUserChannel = oldState.channelID;
