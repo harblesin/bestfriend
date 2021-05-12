@@ -48,7 +48,6 @@ client.on('ready', async () => {
 
     await client.channels.fetch('827348440782340117').then(async channel => {
         connectedChannel = await channel.join();
-
     });
 
 
@@ -57,55 +56,55 @@ client.on('ready', async () => {
 
 });
 
-client.on("voiceStateUpdate", async (oldState, newState) => {
+// client.on("voiceStateUpdate", async (oldState, newState) => {
 
-    let channelId = client.voice.connections.find(c => c.channel.type === 'voice').channel.id;
+//     let channelId = client.voice.connections.find(c => c.channel.type === 'voice').channel.id;
 
-    if (!channelId) {
-        return;
-    } else if (oldState.serverDeaf !== newState.serverDeaf ||
-        oldState.serverMute !== newState.serverMute ||
-        oldState.selfDeaf !== newState.selfDeaf ||
-        oldState.selfMute !== newState.selfMute ||
-        oldState.selfVideo !== newState.selfVideo ||
-        oldState.streaming !== newState.streaming) {
-        return;
-    }
+//     if (!channelId) {
+//         return;
+//     } else if (oldState.serverDeaf !== newState.serverDeaf ||
+//         oldState.serverMute !== newState.serverMute ||
+//         oldState.selfDeaf !== newState.selfDeaf ||
+//         oldState.selfMute !== newState.selfMute ||
+//         oldState.selfVideo !== newState.selfVideo ||
+//         oldState.streaming !== newState.streaming) {
+//         return;
+//     }
 
-    console.log(newState)
+//     console.log(newState)
 
-    let newUserChannel = newState.channelID;
-    let oldUserChannel = oldState.channelID;
+//     let newUserChannel = newState.channelID;
+//     let oldUserChannel = oldState.channelID;
 
-    if (newUserChannel === channelId) {
-        setTimeout(async () => {
-            let user = await client.users.fetch(newState.id).then(async u => { return u.username });
-            // await quickStart(`${user} entered the channel.`);
-            const url = googleTTS.getAudioUrl(`${user} entered the channel.`, {
-                lang: 'en',
-                slow: false,
-                host: 'https://translate.google.com',
-            });
+//     if (newUserChannel === channelId) {
+//         setTimeout(async () => {
+//             let user = await client.users.fetch(newState.id).then(async u => { return u.username });
+//             // await quickStart(`${user} entered the channel.`);
+//             const url = googleTTS.getAudioUrl(`${user} entered the channel.`, {
+//                 lang: 'en',
+//                 slow: false,
+//                 host: 'https://translate.google.com',
+//             });
 
-            dispatcher = connectedChannel.play(url, { volume: 1 });
+//             dispatcher = connectedChannel.play(url, { volume: 1 });
 
-            // dispatcher = connectedChannel.play('http://localhost:9000/voice/googlevoice.mp3', { volume: 1 });
-        }, 500)
-    } else if (oldUserChannel === channelId) {
-        setTimeout(async () => {
-            let user = await client.users.fetch(newState.id).then(async u => { return u.username });
-            // await quickStart(`${user} left the channel`);
-            const url = googleTTS.getAudioUrl(`${user} left the channel`, {
-                lang: 'en',
-                slow: false,
-                host: 'https://translate.google.com',
-            });
+//             // dispatcher = connectedChannel.play('http://localhost:9000/voice/googlevoice.mp3', { volume: 1 });
+//         }, 500)
+//     } else if (oldUserChannel === channelId) {
+//         setTimeout(async () => {
+//             let user = await client.users.fetch(newState.id).then(async u => { return u.username });
+//             // await quickStart(`${user} left the channel`);
+//             const url = googleTTS.getAudioUrl(`${user} left the channel`, {
+//                 lang: 'en',
+//                 slow: false,
+//                 host: 'https://translate.google.com',
+//             });
 
-            dispatcher = connectedChannel.play(url, { volume: 1 });
-            // dispatcher = connectedChannel.play('http://localhost:9000/voice/googlevoice.mp3', { volume: 1 });
-        }, 500)
-    }
-});
+//             dispatcher = connectedChannel.play(url, { volume: 1 });
+//             // dispatcher = connectedChannel.play('http://localhost:9000/voice/googlevoice.mp3', { volume: 1 });
+//         }, 500)
+//     }
+// });
 
 
 client.on('message', async msg => {
@@ -235,6 +234,147 @@ client.on('message', async msg => {
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    if (msg.content === 'rec') {
+
+
+
+        // const receiver = connectedChannel.createReceiver();
+
+        const rec = connectedChannel.receiver.createStream(msg, { mode: 'opus', end: 'manual' });
+
+
+
+        const cast = client.voice.createBroadcast();
+
+        cast.play(rec, { type: 'opus' });
+        dispatcher = connectedChannel.play(cast);
+
+
+
+        // rec.pipe(fs.createWriteStream(path.join(__dirname + `../../../../../Music/rec/piss.mp4`)));
+
+        // setInterval(() => {
+
+        // await client.channels.fetch('827348440782340117').then(async channel => {
+
+        //     console.log(channel)
+
+
+        //     let recChannel = await channel.voice.createBroadcast()////////////////////voiceStateManager;
+
+        //     console.log(recChannel)
+
+        // dispatcher = dispatcher.play(rec, { type: 'opus' });
+
+
+
+        // });
+
+
+
+
+
+
+
+        // dispatcher = connectedChannel.play(rec, { type: 'opus' });
+
+
+        // dispatcher = connectedChannel.play(path.join(__dirname + `../../../../../Music/rec/piss.mp4`), { type: "opus" });
+        // }, 1000)
+
+
+
+
+        // 
+
+        // console.log(rec)
+
+
+
+        // console.log(msg.guild.voiceConnection)
+
+
+        // let connection = msg.guild.voiceConnection;
+
+        // // console.log(connectedChannel.VoiceReceiver)
+
+
+        // // console.log(Discord.VoiceReceiver);
+        // // console.log(client.VoiceReceiver)
+        // client.VoiceReceiver.createStream(msg);
+
+        // console.log(thing)
+    }
+
+
+    if (msg.content === 'recEnd') {
+        client.createStream(msg, end);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // if (msg.content.length > 40 && msg.author.id !== "828530052349820938") {
     //     msg.channel.send("You talk a lot. I diagnose you with chatty bitch disease.")
     // }
@@ -265,7 +405,7 @@ client.on('message', async msg => {
 
         text = text.join(' ')
 
-        say.getInstalledVoices(null);
+        // say.getInstalledVoices(null);    
 
 
 
