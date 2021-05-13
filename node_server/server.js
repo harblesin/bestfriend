@@ -11,6 +11,7 @@ const axios = require("axios");
 const googleTTS = require("google-tts-api");
 const Canvas = require('canvas')
 const textToSpeech = require('@google-cloud/text-to-speech');
+const ytdl = require('ytdl-core');
 
 // Import other required libraries
 const fs = require('fs');
@@ -19,6 +20,7 @@ const util = require('util');
 const speechClient = new textToSpeech.TextToSpeechClient();
 
 let connectedChannel;
+let channel2;
 let dispatcher;
 
 
@@ -246,6 +248,11 @@ client.on('message', async msg => {
 
 
 
+    if (msg.content === 'test') {
+        console.log(dispatcher.volume)
+    }
+
+
 
 
 
@@ -263,8 +270,60 @@ client.on('message', async msg => {
 
         const cast = client.voice.createBroadcast();
 
-        cast.play(rec, { type: 'opus' });
+
+
+        // cast.subscribe()
+
+        // dispatcher = 
+
+
+
+        cast.play(ytdl('https://www.youtube.com/watch?v=LBQ2305fLeA', { filter: 'audioonly' })), { volume: 0.05 };
+
+
         dispatcher = connectedChannel.play(cast);
+
+        dispatcher = dispatcher.setVolume(0.08);
+
+
+        await client.channels.fetch('319404366518026240').then(async channel => {
+            channel2 = channel.join()
+            // channel2 = await channel.join();
+
+        })
+
+        // channel2.play(cast)
+        // connectedChannel.play(cast)
+
+
+
+
+
+
+        // await client.channels.forEach(async element => {
+
+
+        //     console.log(element)
+
+        //     connectedChannel = await channel.join();
+        //     dispatcher = await connectedChannel.play(cast)
+        // });
+
+
+        // ('827348440782340117').then(async channel => {
+
+
+        // });
+
+
+
+
+        // cast.subscribe(connectedChannel);
+
+
+
+
+        // dispatcher = connectedChannel.play(cast);
 
 
 
