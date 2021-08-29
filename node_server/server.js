@@ -58,55 +58,55 @@ client.on('ready', async () => {
 
 });
 
-// client.on("voiceStateUpdate", async (oldState, newState) => {
+client.on("voiceStateUpdate", async (oldState, newState) => {
 
-//     let channelId = client.voice.connections.find(c => c.channel.type === 'voice').channel.id;
+    let channelId = client.voice.connections.find(c => c.channel.type === 'voice').channel.id;
 
-//     if (!channelId) {
-//         return;
-//     } else if (oldState.serverDeaf !== newState.serverDeaf ||
-//         oldState.serverMute !== newState.serverMute ||
-//         oldState.selfDeaf !== newState.selfDeaf ||
-//         oldState.selfMute !== newState.selfMute ||
-//         oldState.selfVideo !== newState.selfVideo ||
-//         oldState.streaming !== newState.streaming) {
-//         return;
-//     }
+    if (!channelId) {
+        return;
+    } else if (oldState.serverDeaf !== newState.serverDeaf ||
+        oldState.serverMute !== newState.serverMute ||
+        oldState.selfDeaf !== newState.selfDeaf ||
+        oldState.selfMute !== newState.selfMute ||
+        oldState.selfVideo !== newState.selfVideo ||
+        oldState.streaming !== newState.streaming) {
+        return;
+    }
 
-//     console.log(newState)
+    console.log(newState)
 
-//     let newUserChannel = newState.channelID;
-//     let oldUserChannel = oldState.channelID;
+    let newUserChannel = newState.channelID;
+    let oldUserChannel = oldState.channelID;
 
-//     if (newUserChannel === channelId) {
-//         setTimeout(async () => {
-//             let user = await client.users.fetch(newState.id).then(async u => { return u.username });
-//             // await quickStart(`${user} entered the channel.`);
-//             const url = googleTTS.getAudioUrl(`${user} entered the channel.`, {
-//                 lang: 'en',
-//                 slow: false,
-//                 host: 'https://translate.google.com',
-//             });
+    if (newUserChannel === channelId) {
+        setTimeout(async () => {
+            let user = await client.users.fetch(newState.id).then(async u => { return u.username });
+            // await quickStart(`${user} entered the channel.`);
+            const url = googleTTS.getAudioUrl(`${user} entered the channel.`, {
+                lang: 'en',
+                slow: false,
+                host: 'https://translate.google.com',
+            });
 
-//             dispatcher = connectedChannel.play(url, { volume: 1 });
+            dispatcher = connectedChannel.play(url, { volume: 1 });
 
-//             // dispatcher = connectedChannel.play('http://localhost:9000/voice/googlevoice.mp3', { volume: 1 });
-//         }, 500)
-//     } else if (oldUserChannel === channelId) {
-//         setTimeout(async () => {
-//             let user = await client.users.fetch(newState.id).then(async u => { return u.username });
-//             // await quickStart(`${user} left the channel`);
-//             const url = googleTTS.getAudioUrl(`${user} left the channel`, {
-//                 lang: 'en',
-//                 slow: false,
-//                 host: 'https://translate.google.com',
-//             });
+            // dispatcher = connectedChannel.play('http://localhost:9000/voice/googlevoice.mp3', { volume: 1 });
+        }, 500)
+    } else if (oldUserChannel === channelId) {
+        setTimeout(async () => {
+            let user = await client.users.fetch(newState.id).then(async u => { return u.username });
+            // await quickStart(`${user} left the channel`);
+            const url = googleTTS.getAudioUrl(`${user} left the channel`, {
+                lang: 'en',
+                slow: false,
+                host: 'https://translate.google.com',
+            });
 
-//             dispatcher = connectedChannel.play(url, { volume: 1 });
-//             // dispatcher = connectedChannel.play('http://localhost:9000/voice/googlevoice.mp3', { volume: 1 });
-//         }, 500)
-//     }
-// });
+            dispatcher = connectedChannel.play(url, { volume: 1 });
+            // dispatcher = connectedChannel.play('http://localhost:9000/voice/googlevoice.mp3', { volume: 1 });
+        }, 500)
+    }
+});
 
 
 client.on('message', async msg => {
@@ -235,6 +235,8 @@ client.on('message', async msg => {
 
     if (msg.content.startsWith('duke')) {
         const choice = Math.floor(Math.random() * 14) + 1;
+
+        console.log("hey")
 
         let files = fs.readdirSync(path.join(__dirname + `../../../../../Music/voice/duke_nukem`))
 
