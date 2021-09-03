@@ -77,12 +77,55 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 
     let newUserChannel = newState.channelID;
     let oldUserChannel = oldState.channelID;
+    let user = await client.users.fetch(newState.id).then(async u => { console.log(u); return u.username });
+    let userId = await client.users.fetch(newState.id).then(async u => { console.log(u); return u.id });
+    let userName;
+
+
+    switch (userId) {
+        case '268212578092580864':
+            userName = "Harrison";
+            break;
+        case '319004973117734913':
+            userName = "Matt";
+            break;
+        case '219518400009994251':
+            userName = "Japes";
+            break;
+        case '320732199592787969':
+            userName = "Nick";
+            break;
+        case '594953556922990607':
+            userName = "Cody";
+            break;
+        case '327210267182366720':
+            userName = "Pork";
+            break;
+        case '333794055114850307':
+            userName = "Zac";
+            break;
+        case '419275595680317440':
+            userName = "Josh";
+            break;
+        case '116633485594066950':
+            userName = "Hector";
+            break;
+        case '226355855627517953':
+            userName = "Sean";
+            break;
+        case '828530052349820938':
+            userName = 'Bot';
+            break;
+        default:
+            userName = "Someone";
+            break;
+    }
 
     if (newUserChannel === channelId) {
         setTimeout(async () => {
-            let user = await client.users.fetch(newState.id).then(async u => { return u.username });
+
             // await quickStart(`${user} entered the channel.`);
-            const url = googleTTS.getAudioUrl(`${user} entered the channel.`, {
+            const url = googleTTS.getAudioUrl(`${userName} joined`, {
                 lang: 'en',
                 slow: false,
                 host: 'https://translate.google.com',
@@ -94,9 +137,8 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
         }, 500)
     } else if (oldUserChannel === channelId) {
         setTimeout(async () => {
-            let user = await client.users.fetch(newState.id).then(async u => { return u.username });
             // await quickStart(`${user} left the channel`);
-            const url = googleTTS.getAudioUrl(`${user} left the channel`, {
+            const url = googleTTS.getAudioUrl(`${userName} left`, {
                 lang: 'en',
                 slow: false,
                 host: 'https://translate.google.com',
