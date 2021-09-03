@@ -117,7 +117,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
             userName = 'Bot';
             break;
         default:
-            userName = "Someone";
+            userName = user;
             break;
     }
 
